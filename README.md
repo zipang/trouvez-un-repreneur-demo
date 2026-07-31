@@ -78,7 +78,7 @@ Le site est alors disponible sur l'URL `https://<projet>.vercel.app`.
 
 ```sh
 cd www
-bun --hot index.html
+bunx serve .          # http://localhost:3000
 ```
 
 Ou simplement ouvrir `index.html` dans un navigateur — tout est statique,
