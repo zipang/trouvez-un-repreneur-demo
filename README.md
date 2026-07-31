@@ -65,7 +65,8 @@ vercel
 vercel --prod
 ```
 
-Le site est alors disponible sur l'URL `https://<projet>.vercel.app`.
+Le site est alors disponible sur l'URL
+`https://rachat-voiture-express.vercel.app`.
 
 ### Ajouter un nom de domaine
 
@@ -83,3 +84,33 @@ bunx serve .          # http://localhost:3000
 
 Ou simplement ouvrir `index.html` dans un navigateur — tout est statique,
 aucun serveur n'est requis.
+
+### Audit qualité (vitals + a11y)
+
+Deux audits rapides à lancer sur le site déployé, via `agent-browser` :
+
+```sh
+# Core Web Vitals : TTFB, FCP, LCP, CLS, INP (+ --json pour le détail)
+agent-browser vitals https://rachat-voiture-express.vercel.app --json
+
+# Audit d'accessibilité axe-core (violations WCAG + sélecteurs des nœuds)
+agent-browser a11y https://rachat-voiture-express.vercel.app --json
+```
+
+Pour un **rapport Lighthouse complet** (Performance, Accessibility, Best
+Practices, SEO) :
+
+```sh
+npx lighthouse https://rachat-voiture-express.vercel.app \
+  --preset=desktop --output=html --output-path=lighthouse.html
+```
+
+État au 31/07/2026 :
+
+- **vitals** : TTFB 5.3 ms, FCP 520 ms, LCP 520 ms, CLS 0.0001 — très bon.
+- **a11y** : 2 violations à corriger —
+  - *color-contrast* (serious) : les accents doré `#ffc502` / orange `#ff5a00`
+    sur fonds clairs (labels, brand, kickers, CTA) sous les ratios WCAG ;
+  - *heading-order* (moderate) : des `h3`/`h4` sautent un niveau.
+  - à vérifier manuellement : `aria-label` sur des `div` sans `role`
+    (`form-card`, `card__header`), étoiles et légendes sur images.

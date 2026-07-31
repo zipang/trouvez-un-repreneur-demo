@@ -994,6 +994,16 @@ textarea {
     width: 4rem;
     height: 4rem;
 }
+/* Media image at the top of a card (replaces the icon block).
+   width/height attributes on the <img> reserve the aspect ratio, so the
+   card keeps its layout before the file loads (no CLS). */
+.card__media {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--rounded-sm);
+    margin-bottom: var(--space-md);
+}
 
 .card__title {
     font-size: var(--font-size-lg);
