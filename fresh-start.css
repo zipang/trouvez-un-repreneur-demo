@@ -976,6 +976,7 @@ textarea {
 .card__header {
     display: flex;
     align-items: center; /* vertical centering inside the header */
+    justify-content: center; /* testimonial star row is centered in the card */
     margin-bottom: var(--space-md);
 }
 .card__icon {
@@ -1164,6 +1165,22 @@ textarea {
 .testimonial__quote {
     font-size: var(--font-size-base);
     line-height: var(--line-height-normal);
+}
+/* Decorative quote mark as a lettrine (drop cap): floated left so the text
+   wraps around it instead of overlapping. The negative left margin keeps it
+   glued to the card's left border (compensates the card's --space-lg padding).
+   Muted color + low opacity → watermark, never competes with the text. */
+.testimonial__quote::before {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 4rem;
+    content: "\201C";
+    float: left;
+    margin: 1rem 0.3rem 0.5rem -0.1rem;
+    line-height: 0.2;
+    color: var(--color-brand-primary-muted);
+    opacity: 0.55;
+    user-select: none;
+    pointer-events: none;
 }
 .testimonial__author {
     font-size: var(--font-size-sm);
