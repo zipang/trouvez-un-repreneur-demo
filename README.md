@@ -33,7 +33,7 @@ push sur la branche par défaut.
    ```sh
    cd www
    git remote add origin https://github.com/<votre-compte>/<repo>.git
-   git push -u origin main
+   git push -u origin master
    ```
 
 2. **Importer le projet dans Vercel** :
@@ -46,7 +46,7 @@ push sur la branche par défaut.
      - **Output Directory** : `.` (la racine, où se trouve `index.html`)
    - Cliquez sur **Deploy**.
 
-3. **Déploiements suivants** : chaque `git push` sur `main` déclenche
+3. **Déploiements suivants** : chaque `git push` sur `master` déclenche
    automatiquement une mise en production. Rien à faire.
 
 ### Option B — Déploiement via la CLI
