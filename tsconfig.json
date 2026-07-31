@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "types": ["bun"],
+    "resolveJsonModule": true,
+    "moduleResolution": "bundler",
+    "module": "esnext"
+  },
+  "exclude": ["node_modules"],
+}
+

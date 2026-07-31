@@ -243,6 +243,11 @@ h6 {
     line-height: var(--line-height-tight);
     letter-spacing: var(--letter-spacing-tight);
     margin: 0;
+
+    > b,
+    > strong {
+        color: var(--color-brand-primary);
+    }
 }
 h1 {
     font-size: var(--font-size-display);
@@ -1197,6 +1202,8 @@ textarea {
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
+    interpolate-size: allow-keywords; /* enables block-size: auto interpolation
+                                         on ::details-content (FAQ animation) */
 }
 .faq__item {
     background: var(--color-surface-light);
@@ -1217,6 +1224,7 @@ textarea {
     text-transform: uppercase;
     color: var(--color-text-accent);
     text-align: left;
+    list-style: none; /* hide the native marker (Firefox) — the chevron replaces it */
 }
 .faq__summary::-webkit-details-marker {
     display: none;
@@ -1228,6 +1236,20 @@ textarea {
 }
 .faq__item[open] .faq__chev {
     transform: rotate(180deg);
+}
+/* Animated open/close of the answer. ::details-content wraps the answer:
+   block-size 0 → auto transitions the height; the content-visibility
+   transition smooths the reveal on close. Requires interpolate-size on .faq.
+   Browsers without ::details-content support fall back to native behaviour. */
+.faq__item::details-content {
+    block-size: 0;
+    overflow-y: clip;
+    transition:
+        block-size 0.35s ease,
+        content-visibility 0.35s allow-discrete;
+}
+.faq__item[open]::details-content {
+    block-size: auto;
 }
 .faq__answer {
     padding: 0 var(--space-lg) var(--space-lg);
