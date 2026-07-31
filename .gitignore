@@ -1,0 +1,8 @@
+# macOS
+.DS_Store
+
+# Vercel CLI local link metadata
+.vercel
+
+# Node (if ever used locally)
+node_modules
