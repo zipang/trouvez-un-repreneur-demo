@@ -1,10 +1,10 @@
-[
-  { "brand": "Renault", "model": "Clio", "year": 2019 },
-  { "brand": "Peugeot", "model": "208", "year": 2021 },
-  { "brand": "Volkswagen", "model": "Golf", "year": 2018 },
-  { "brand": "BMW", "model": "Série 3", "year": 2020 },
-  { "brand": "Citroën", "model": "C3", "year": 2022 },
-  { "brand": "Dacia", "model": "Sandero", "year": 2020 },
-  { "brand": "Toyota", "model": "Yaris", "year": 2021 },
-  { "brand": "Ford", "model": "Focus", "year": 2017 }
-]
+{
+  "AB-123-CD": { "brand": "Volkswagen", "model": "Golf", "year": 2018 },
+  "AZ-456-EF": { "brand": "Renault", "model": "Clio", "year": 2019 },
+  "BT-789-GH": { "brand": "Peugeot", "model": "208", "year": 2021 },
+  "CC-012-IJ": { "brand": "BMW", "model": "Série 3", "year": 2020 },
+  "DG-345-KL": { "brand": "Citroën", "model": "C3", "year": 2022 },
+  "EH-678-MN": { "brand": "Dacia", "model": "Sandero", "year": 2020 },
+  "FJ-901-OP": { "brand": "Toyota", "model": "Yaris", "year": 2021 },
+  "GK-234-QR": { "brand": "Ford", "model": "Focus", "year": 2017 }
+}
