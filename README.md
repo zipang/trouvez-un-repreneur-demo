@@ -4,15 +4,20 @@ Version exportable du site **Rachat Voiture Express** (landing page
 « Estimez et vendez cash »), issue de l'expérimentation
 `design/experiments/fresh-start`.
 
+⚠️ **Ce dossier est généré automatiquement.** La source de vérité se trouve
+dans `src/`. Les modifications actives du front-end, du design system et de
+l'API doivent être faites dans `src/`, puis synchronisées vers `www/` via
+`bun run build` (voir le README à la racine du projet).
+
 Le site est **100 % statique** : HTML + CSS + un peu de JavaScript inline.
-Pas de build, pas d'installation, pas de variables d'environnement.
+Pas de build côté Vercel, pas d'installation, pas de variables d'environnement.
 
 ## Contenu
 
 | Fichier          | Rôle                                                        |
 | ---------------- | ----------------------------------------------------------- |
 | `index.html`     | Page d'accueil (HTML + JS inline : wizard d'estimation, upload photos) |
-| `fresh-start.css`| Design system complet (tokens + composants)                 |
+| `rachat-voiture-express.css`| Design system complet (tokens + composants)        |
 | `color-variants.css` | Variante de palette                                         |
 | `vercel.json`    | Configuration Vercel explicite (site statique, sans framework) |
 

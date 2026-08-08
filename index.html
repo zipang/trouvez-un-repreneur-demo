@@ -17,8 +17,8 @@
             rel="stylesheet"
         />
 
-        <!-- fresh-start Design System -->
-        <link rel="stylesheet" href="fresh-start.css" />
+        <!-- rachat-voiture-express Design System -->
+        <link rel="stylesheet" href="rachat-voiture-express.css" />
         <link rel="stylesheet" href="color-variants.css" />
     </head>
     <body>
@@ -197,37 +197,37 @@
                                 <!-- Step 2 — Véhicule (marque / modèle / année) -->
                                 <div class="form-step" data-step="2">
                                     <div class="field">
-                                        <label class="field__label" for="marque"
+                                        <label class="field__label" for="brand"
                                             >Marque</label
                                         >
                                         <input
                                             class="input"
-                                            id="marque"
-                                            name="marque"
+                                            id="brand"
+                                            name="brand"
                                             placeholder="Renault"
                                             autocomplete="off"
                                         />
                                     </div>
                                     <div class="field">
-                                        <label class="field__label" for="modele"
+                                        <label class="field__label" for="model"
                                             >Modèle</label
                                         >
                                         <input
                                             class="input"
-                                            id="modele"
-                                            name="modele"
+                                            id="model"
+                                            name="model"
                                             placeholder="Clio"
                                             autocomplete="off"
                                         />
                                     </div>
                                     <div class="field">
-                                        <label class="field__label" for="annee"
+                                        <label class="field__label" for="year"
                                             >Année</label
                                         >
                                         <input
                                             class="input input--mono"
-                                            id="annee"
-                                            name="annee"
+                                            id="year"
+                                            name="year"
                                             type="text"
                                             inputmode="numeric"
                                             placeholder="2019"
@@ -1716,8 +1716,10 @@
         <!-- ============================================================================
      Minimal JS — multi-step form navigation + submit success state
      ========================================================================== -->
-        <script>
-            (function () {
+        <script type="module">
+            import { formatPlate, getCarModel } from "js/car-model.js";
+
+            (() => {
                 const form = document.getElementById("estimate-form");
                 if (!form) return;
                 const steps = Array.from(form.querySelectorAll(".form-step"));
@@ -1820,6 +1822,31 @@
                         for (const f of e.dataTransfer.files) dt.items.add(f);
                         fileInput.files = dt.files;
                         updateDropzone();
+                    });
+                }
+                // Plaque -> modèle : à la sortie du champ, on normalise,
+                // on vérifie le cache localStorage puis on remplit
+                // silencieusement les champs marque / modèle / année (step 2).
+                const immat = document.getElementById("immat");
+                const brandInput = document.getElementById("brand");
+                const modelInput = document.getElementById("model");
+                const yearInput = document.getElementById("year");
+                const fillCarFields = (car) => {
+                    if (!car) return;
+                    if (brandInput) brandInput.value = car.brand ?? "";
+                    if (modelInput) modelInput.value = car.model ?? "";
+                    if (yearInput) yearInput.value = car.year ?? "";
+                };
+                if (immat) {
+                    immat.addEventListener("blur", async () => {
+                        const plate = formatPlate(immat.value);
+                        if (!plate) return;
+                        immat.value = plate;
+                        try {
+                            fillCarFields(await getCarModel(plate));
+                        } catch {
+                            // Silencieux : on laisse les champs vides.
+                        }
                     });
                 }
             })();
