@@ -10,7 +10,6 @@ l'API doivent être faites dans `src/`, puis synchronisées vers `www/` via
 `bun run build` (voir le README à la racine du projet).
 
 Le site est **100 % statique** : HTML + CSS + un peu de JavaScript inline.
-Pas de build côté Vercel, pas d'installation, pas de variables d'environnement.
 
 ## Contenu
 
@@ -28,10 +27,10 @@ leurs CDN respectifs — aucune ressource locale à déployer en plus.
 
 ## Déploiement sur Vercel
 
-### Option A — Déploiement automatique à chaque push (recommandé)
+### Déploiement automatique à chaque push
 
 Le site est un repo Git. Le déploiement se déclenche tout seul à chaque
-push sur la branche par défaut.
+push sur la branche par défaut (master).
 
 1. **Pousser le code sur un hébergeur Git** (GitHub, GitLab ou Bitbucket) :
 
@@ -53,32 +52,6 @@ push sur la branche par défaut.
 
 3. **Déploiements suivants** : chaque `git push` sur `master` déclenche
    automatiquement une mise en production. Rien à faire.
-
-### Option B — Déploiement via la CLI
-
-Si vous préférez déployer sans passer par un repo Git :
-
-```sh
-# Installation une fois (nécessite Node.js)
-npm i -g vercel
-
-# Premier déploiement (liaison du projet, framework "Other")
-cd www
-vercel
-
-# Mise en production
-vercel --prod
-```
-
-Le site est alors disponible sur l'URL
-`https://rachat-voiture-express.vercel.app`.
-
-### Ajouter un nom de domaine
-
-1. Dans le tableau de bord Vercel : **Project → Settings → Domains**.
-2. Ajoutez `rachatvoitureexpress.fr` (et éventuellement `www.`).
-3. Suivez les instructions DNS affichées (Apex via ALIAS/ANAME chez votre
-   registrar, ou simple redirection).
 
 ### Vérifier localement avant de déployer
 
