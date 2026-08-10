@@ -1,4 +1,4 @@
-import carsJson from "./cars.json";
+import carsJson from "./cars.json" with { type: "json" };
 import { error, success } from "./helpers";
 import { withAuth, withCors, withLog } from "./middleware";
 
