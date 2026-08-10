@@ -1,9 +1,6 @@
-import carsJson from "./cars.json" with { type: "json" };
+import { type Car, cars } from "./cars";
 import { error, success } from "./helpers";
 import { withAuth, withCors, withLog } from "./middleware";
-
-type Car = { brand: string; model: string; year: number };
-const cars = carsJson as Record<string, Car>;
 
 const GET = (request: Request) => {
 	const { searchParams } = new URL(request.url);
