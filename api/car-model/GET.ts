@@ -1,10 +1,10 @@
+// temporary mockup for a models lookup API
+import { models } from "../../services/models";
 import { checkEnv } from "../env";
 import { ErrorCode } from "../errors";
 import { error, requestUrl, success } from "../helpers";
 import { compose, type RequestHandler, withAuth, withCors, withErrors, withLog } from "../middleware";
 import { apiEnv } from "../schema";
-// temporary mockup for a models lookup API
-import { models } from "../../services/models";
 
 const GET: RequestHandler = async (request) => {
 	checkEnv(apiEnv);
