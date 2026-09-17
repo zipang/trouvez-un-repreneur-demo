@@ -2,5 +2,6 @@
   "bunVersion": "1.x",
   "framework": null,
   "buildCommand": null,
-  "outputDirectory": "."
+  "outputDirectory": ".",
+  "rewrites": [{ "source": "/api/car-model", "destination": "/api/car-model/GET" }]
 }
