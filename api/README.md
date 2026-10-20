@@ -21,10 +21,11 @@ Sur Vercel, un handler `api/<resource>/<METHOD>.ts` est exposé sous
 
 ### Authentification
 
-Les en-têtes `Origin` et `x-api-key` sont obligatoires. Une requête est
-same-origin quand son `Origin` partage le nom de domaine de `BASE_URL` : elle
-est alors autorisée sans clé. Toute autre origine est considérée comme externe
-et doit correspondre à une entrée de `API_CLIENTS` avec la bonne `x-api-key`.
+Une requête est same-origin quand son `Origin` (ou, à défaut, l'hôte de la
+requête — les navigateurs omettent `Origin` sur un GET same-origin) partage le
+nom de domaine de `BASE_URL` : elle est alors autorisée sans clé. Toute autre
+origine est considérée comme externe et doit correspondre à une entrée de
+`API_CLIENTS` avec la bonne `x-api-key`.
 
 `API_CLIENTS` est un objet JSON associant chaque origine externe autorisée à sa
 clé d'API :

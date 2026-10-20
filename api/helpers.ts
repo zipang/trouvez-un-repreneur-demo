@@ -54,6 +54,7 @@ export const error = (code: ErrorCode, message: string, status = 400): Response 
  */
 export const requestUrl = (request: Request): URL => {
 	const raw = request.url;
+
 	try {
 		return new URL(raw);
 	} catch {
@@ -62,6 +63,7 @@ export const requestUrl = (request: Request): URL => {
 				"request.url est relatif et BASE_URL n'est pas définie : impossible de construire l'URL."
 			);
 		}
+
 		return new URL(raw, BASE_URL);
 	}
 };
@@ -110,17 +112,20 @@ const LOGGABLE_BODY_TYPES = new Set([
  */
 export const requestParams = async (request: Request): Promise<Record<string, unknown>> => {
 	const params: Record<string, unknown> = {};
+
 	for (const [key, value] of requestUrl(request).searchParams) {
 		params[key] ??= value;
 	}
 
 	const contentType = (request.headers.get("content-type") ?? "").split(";")[0].trim().toLowerCase();
+
 	if (!LOGGABLE_BODY_TYPES.has(contentType) || request.bodyUsed) {
 		return params;
 	}
 
 	try {
 		const clone = request.clone();
+
 		if (contentType === "application/json") {
 			Object.assign(params, await clone.json());
 		} else {
@@ -132,5 +137,6 @@ export const requestParams = async (request: Request): Promise<Record<string, un
 	} catch {
 		return params;
 	}
+
 	return params;
 };

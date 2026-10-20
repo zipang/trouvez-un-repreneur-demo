@@ -10,14 +10,20 @@ const GET: RequestHandler = async (request) => {
 	checkEnv(apiEnv);
 	const { searchParams } = requestUrl(request);
 	const plate = searchParams.get("plate")?.trim();
+
 	if (!plate) {
 		return error(ErrorCode.BAD_REQUEST, "Paramètre plate manquant");
 	}
 	const model = models[plate];
+
 	if (!model) {
 		return error(ErrorCode.NOT_FOUND, `Aucun véhicule connu pour la plaque ${plate}`, 404);
 	}
+
 	return success({ plate, ...model });
 };
 
+/**
+ * Handles the car-model lookup for `GET /api/car-model`.
+ */
 export default compose(withCors, withErrors, withLog, withAuth)(GET);

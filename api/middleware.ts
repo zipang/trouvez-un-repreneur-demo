@@ -43,6 +43,7 @@ const BASE_URL_HOSTNAME = new URL(process.env.BASE_URL ?? "http://localhost").ho
 const API_CLIENTS: Record<string, string> = (() => {
 	try {
 		const raw = JSON.parse(process.env.API_CLIENTS ?? "{}") as Record<string, unknown>;
+
 		return Object.fromEntries(Object.entries(raw).filter(([, key]) => typeof key === "string")) as Record<
 			string,
 			string
@@ -60,9 +61,11 @@ const API_CLIENTS: Record<string, string> = (() => {
  */
 const originHostname = (request: Request): string | null => {
 	const origin = request.headers.get("origin");
+
 	if (!origin) {
 		return null;
 	}
+
 	try {
 		return new URL(origin).hostname;
 	} catch {
@@ -85,6 +88,7 @@ const corsHeaders = (request: Request): Record<string, string> => {
 		origin && (API_CLIENTS[origin] !== undefined || originHostname(request) === BASE_URL_HOSTNAME)
 			? origin
 			: "null";
+
 	return {
 		"Access-Control-Allow-Origin": allowed,
 		Vary: "Origin",
@@ -107,27 +111,35 @@ export const withCors: Middleware = (handler) => async (request) => {
 		return new Response(null, { status: 204, headers: corsHeaders(request) });
 	}
 	const response = await handler(request);
+
 	for (const [key, value] of Object.entries(corsHeaders(request))) {
 		response.headers.set(key, value);
 	}
+
 	return response;
 };
 
 /**
  * Adds an authentication layer to a handler.
  *
- * Both the `Origin` and `x-api-key` headers are mandatory. Requests from the
- * same domain as `BASE_URL` are allowed without an API key. External requests
- * must present an `Origin` that matches a known client and an `x-api-key`
- * equal to that client's key.
+ * Requests from the same domain as `BASE_URL` are allowed without an API key:
+ * either the `Origin` header matches, or it is absent (browsers omit it on a
+ * same-origin GET) and the request host matches. External requests must
+ * present an `Origin` that matches a known client and an `x-api-key` equal to
+ * that client's key.
  *
  * @param handler the handler to wrap
  * @returns the wrapped handler
  */
 export const withAuth: Middleware = (handler) => async (request) => {
 	const origin = request.headers.get("origin");
+
+	// Browsers omit Origin on a same-origin GET: the request host identifies
+	// the caller in that case. Cross-origin requests always carry Origin.
 	if (!origin) {
-		return error(ErrorCode.UNAUTHORIZED, "En-tête Origin manquant", 401);
+		const sameHost = new URL(request.url).hostname === BASE_URL_HOSTNAME;
+
+		return sameHost ? handler(request) : error(ErrorCode.UNAUTHORIZED, "En-tête Origin manquant", 401);
 	}
 
 	if (originHostname(request) === BASE_URL_HOSTNAME) {
@@ -135,9 +147,11 @@ export const withAuth: Middleware = (handler) => async (request) => {
 	}
 
 	const key = request.headers.get("x-api-key");
+
 	if (!key || key !== API_CLIENTS[origin]) {
 		return error(ErrorCode.UNAUTHORIZED, "Non autorisé", 401);
 	}
+
 	return handler(request);
 };
 
@@ -160,10 +174,12 @@ export const withLog: Middleware = (handler) => async (request) => {
 	const suffix = envFlag("MIDDLEWARE_LOG_PARAMETERS")
 		? ` params=${truncate(JSON.stringify(await requestParams(request)), LOG_PARAMS_MAX_LENGTH)}`
 		: "";
+
 	try {
 		const response = await handler(request);
 		const elapsed = (performance.now() - startedAt).toFixed(1);
 		console.log(`[api] ${request.method} ${url.pathname} -> ${response.status} (${elapsed}ms)${suffix}`);
+
 		return response;
 	} catch (error) {
 		const elapsed = (performance.now() - startedAt).toFixed(1);
