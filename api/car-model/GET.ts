@@ -25,5 +25,9 @@ const GET: RequestHandler = async (request) => {
 
 /**
  * Handles the car-model lookup for `GET /api/car-model`.
+ *
+ * Uses the Vercel Web Handler contract (`{ fetch }`). A bare default function
+ * is deployed as a Node.js `(request, response)` handler, whose `request.headers`
+ * is a plain object: `request.headers.get(...)` then throws on Vercel.
  */
-export default compose(withCors, withErrors, withLog, withAuth)(GET);
+export default { fetch: compose(withCors, withErrors, withLog, withAuth)(GET) };
