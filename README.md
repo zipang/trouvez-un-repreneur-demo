@@ -1,94 +1,92 @@
-# rachatvoitureexpress — site statique
+# Trouvez Un Repreneur — production site
 
-Version exportable du site **Rachat Voiture Express** (landing page
-« Estimez et vendez cash »), issue de l'expérimentation
-`design/experiments/fresh-start`.
+This directory holds the production build of **Trouvez Un Repreneur**. The
+source repository is `git@github.com:zipang/trouvez-un-repreneur.git`. It
+builds this directory from `src/`.
 
-⚠️ **Ce dossier est généré automatiquement.** La source de vérité se trouve
-dans `src/`. Les modifications actives du front-end, du design system et de
-l'API doivent être faites dans `src/`, puis synchronisées vers `www/` via
-`bun run build` (voir le README à la racine du projet).
+> **Do not edit the generated files.** The build overwrites them. Change the
+> sources in `src/` of the source repository, then run `bun run build`.
 
-Le site est **100 % statique** : HTML + CSS + un peu de JavaScript inline.
+## Deployment
 
-## Contenu
+| Item        | Value                                                  |
+| ----------- | ------------------------------------------------------ |
+| Git remote  | `git@github.com:zipang/trouvez-un-repreneur-demo.git`  |
+| Branch      | `master`                                               |
+| Host        | Vercel                                                 |
+| Runtime     | Bun                                                    |
+| Build step  | none (the files are already built)                     |
+| Output root | `.`                                                    |
 
-| Fichier          | Rôle                                                        |
-| ---------------- | ----------------------------------------------------------- |
-| `index.html`     | Page d'accueil (HTML + JS inline : wizard d'estimation, upload photos) |
-| `rachat-voiture-express.css`| Design system complet (tokens + composants)        |
-| `color-variants.css` | Variante de palette                                         |
-| `vercel.json`    | Configuration Vercel explicite (site statique, sans framework) |
+Each push to `master` starts a production deployment. The `master` branch
+tracks `origin/master` and pushes to the repository above.
 
-Les polices (Google Fonts) et les photos (Unsplash) sont chargées depuis
-leurs CDN respectifs — aucune ressource locale à déployer en plus.
+## Contents
 
----
+| Path           | Role                                                         |
+| -------------- | ------------------------------------------------------------ |
+| `index.html`   | Landing page with the inlined estimation wizard               |
+| `chunk-*.js`   | Bundled and minified JavaScript                               |
+| `chunk-*.css`  | Purged CSS of the design system and the components            |
+| `api/`         | Serverless API functions (TypeScript, Bun runtime)            |
+| `services/`    | Shared modules that the API functions import                  |
+| `vercel.json`  | Vercel configuration and API route rewrite                    |
+| `README.md`    | This file                                                     |
 
-## Déploiement sur Vercel
+The page is a single full-screen estimation wizard. It has no site header and
+no site footer. The wizard owns the viewport and works from 320 px wide.
 
-### Déploiement automatique à chaque push
+## Build and deploy
 
-Le site est un repo Git. Le déploiement se déclenche tout seul à chaque
-push sur la branche par défaut (master).
-
-1. **Pousser le code sur un hébergeur Git** (GitHub, GitLab ou Bitbucket) :
-
-   ```sh
-   cd www
-   git remote add origin https://github.com/<votre-compte>/<repo>.git
-   git push -u origin master
-   ```
-
-2. **Importer le projet dans Vercel** :
-   - Rendez-vous sur <https://vercel.com/new>.
-   - Connectez votre compte Git, puis **Import** sur le repo créé.
-   - Les réglages sont déjà les bons (détectés automatiquement ou fournis
-     par `vercel.json`) :
-     - **Framework Preset** : `Other`
-     - **Build Command** : *(aucun)*
-     - **Output Directory** : `.` (la racine, où se trouve `index.html`)
-   - Cliquez sur **Deploy**.
-
-3. **Déploiements suivants** : chaque `git push` sur `master` déclenche
-   automatiquement une mise en production. Rien à faire.
-
-### Vérifier localement avant de déployer
+Run these commands in the parent repository:
 
 ```sh
-cd www
-bunx serve .          # http://localhost:3000
+bun run build   # rebuild this directory from src/
+bun run deploy  # rebuild, commit and push this directory
 ```
 
-Ou simplement ouvrir `index.html` dans un navigateur — tout est statique,
-aucun serveur n'est requis.
+The build preserves `.git`, `.gitignore`, `README.md`, `package.json` and
+`vercel.json`.
 
-### Audit qualité (vitals + a11y)
+## Local preview
 
-Deux audits rapides à lancer sur le site déployé, via `agent-browser` :
+Preview the built files only:
 
 ```sh
-# Core Web Vitals : TTFB, FCP, LCP, CLS, INP (+ --json pour le détail)
-agent-browser vitals https://rachat-voiture-express.vercel.app --json
-
-# Audit d'accessibilité axe-core (violations WCAG + sélecteurs des nœuds)
-agent-browser a11y https://rachat-voiture-express.vercel.app --json
+bunx serve www
 ```
 
-Pour un **rapport Lighthouse complet** (Performance, Accessibility, Best
-Practices, SEO) :
+This static server does not run the API functions.
+
+Preview the full site with the API, from the parent repository:
 
 ```sh
-npx lighthouse https://rachat-voiture-express.vercel.app \
-  --preset=desktop --output=html --output-path=lighthouse.html
+BASE_URL=http://localhost:3000 bun ./serve.ts --preprod
 ```
 
-État au 31/07/2026 :
+Open `http://localhost:3000/`.
 
-- **vitals** : TTFB 5.3 ms, FCP 520 ms, LCP 520 ms, CLS 0.0001 — très bon.
-- **a11y** : 2 violations à corriger —
-  - *color-contrast* (serious) : les accents doré `#ffc502` / orange `#ff5a00`
-    sur fonds clairs (labels, brand, kickers, CTA) sous les ratios WCAG ;
-  - *heading-order* (moderate) : des `h3`/`h4` sautent un niveau.
-  - à vérifier manuellement : `aria-label` sur des `div` sans `role`
-    (`form-card`, `card__header`), étoiles et légendes sur images.
+## Environment variables
+
+Set these variables in the Vercel project settings.
+
+| Variable                    | Required | Role                                                                 |
+| --------------------------- | -------- | -------------------------------------------------------------------- |
+| `BASE_URL`                  | yes      | Public base URL. The API resolves request URLs and same-origin requests with it. |
+| `API_CLIENTS`               | no       | JSON map of external origins to their API keys.                       |
+| `MIDDLEWARE_LOG_PARAMETERS` | no       | Set to `TRUE` to log the request parameters.                          |
+
+Without `BASE_URL`, the API functions respond with an internal error.
+
+## API
+
+The endpoint `/api/car-model?plate=AB-123-CD` returns the vehicle for a plate.
+`vercel.json` rewrites `/api/car-model` to `api/car-model/GET.ts`.
+
+Every response uses the same envelope:
+
+```json
+{ "status": 200, "success": true, "error": null, "payload": {} }
+```
+
+The client reads the vehicle fields from `payload`.
